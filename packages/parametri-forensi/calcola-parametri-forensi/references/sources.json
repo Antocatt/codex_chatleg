@@ -1,0 +1,19 @@
+{
+  "verified_on": "2026-10-08",
+  "normative_basis": "D.M. 55/2014 come modificato dal D.M. 37/2018 e D.M. 147/2022",
+  "official_gazette_pdf": "https://www.gazzettaufficiale.it/eli/gu/2022/10/08/236/sg/pdf",
+  "gazette_pdf_sha256": "ad37c90fe06987dca7569b1a4fca19f6e206ad61999306bc4df06695cbd2ffdf",
+  "snapshots_sha256": {
+    "references/allegato-gu.html": "8ab31c69b90d7c8e19dd2d9fcab1c496003349951498a2e1255556a2ca4a42a8",
+    "references/allegato-gu.txt": "f4ca589645d399fb42f626d4998dd13d677105ee94adbeee93eb7a016cc43629",
+    "references/dm147-2022-estratto.txt": "0e6dbea0894e69628ffcc737e1f0b7a59d61cc7dfc8b50e0c90c02548916bd60",
+    "references/tabelle-ufficiali-estratte.txt": "ffaa61bd3d53bd967b47c74c6610bdf1d341338f1f859e351e9495c4b70f2131",
+    "data/tables.json": "07e7f913173ec03991885dde64dc89d7496432a25c235a3ae1ff9ee7adaaca38",
+    "references/tabella15-gu-pagina7.png": "bafd13d2270fb1e56db67eb0b9e2c957bb508ffc24dd9b30fc5084d06e556f22"
+  },
+  "penal_visual_source": {
+    "gazette_printed_page": 7,
+    "pdf_page": 9,
+    "image": "references/tabella15-gu-pagina7.png"
+  }
+}

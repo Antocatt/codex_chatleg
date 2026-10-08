@@ -1,0 +1,14 @@
+{
+  "title": "Preventivo assistenza civile",
+  "purpose": "preventivo",
+  "table": "tribunale",
+  "value": "20000.00",
+  "value_basis": "Valore della domanda ex art. 5, comma 2, D.M. 55/2014",
+  "phases": ["studio", "introduttiva", "istruttoria", "decisionale"],
+  "normative_date": "2026-10-08",
+  "tax_regime": "ordinario",
+  "cpa": true,
+  "withholding": false,
+  "expenses_art15": "0.00",
+  "special_cases": []
+}

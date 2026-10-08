@@ -1,0 +1,18 @@
+{
+  "title": "Parametri penali - Tribunale collegiale",
+  "table": "penale-tribunale-collegiale",
+  "phases": [
+    "studio",
+    "introduttiva",
+    "istruttoria",
+    "decisionale"
+  ],
+  "cpa": true,
+  "vat": true,
+  "complexity_percent": "25",
+  "complexity_reason": "Procedimento di particolare complessità",
+  "subjects": 3,
+  "plurality_percent": "max",
+  "plurality_confirmed": true,
+  "plurality_reason": "Stessa posizione processuale e situazioni distinte"
+}

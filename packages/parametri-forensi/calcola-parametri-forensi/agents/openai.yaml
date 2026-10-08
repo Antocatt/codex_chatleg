@@ -1,0 +1,4 @@
+interface:
+  display_name: "Parametri forensi italiani"
+  short_description: "Compensi civili e penali con calcolo verificabile"
+  default_prompt: "Usa $calcola-parametri-forensi per preparare un prospetto dei compensi chiedendomi i dati mancanti."

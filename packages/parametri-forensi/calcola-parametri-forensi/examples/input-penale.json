@@ -1,0 +1,13 @@
+{
+  "title": "Nota compensi difesa penale",
+  "purpose": "cliente",
+  "table": "penale-tribunale-monocratico",
+  "phases": ["studio", "introduttiva", "istruttoria", "decisionale"],
+  "completed_on": "2026-10-01",
+  "normative_date": "2026-10-08",
+  "tax_regime": "forfettario",
+  "cpa": true,
+  "withholding": false,
+  "expenses_art15": "0.00",
+  "special_cases": []
+}
