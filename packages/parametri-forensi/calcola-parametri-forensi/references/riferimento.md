@@ -21,6 +21,7 @@ Verifica delle fonti: 8 ottobre 2026. La versione consolidata del D.M. 55/2014 c
 | Ambito parametri, distinzione dall’accordo sul compenso | D.M. 55 art. 1; L. 247/2012 art. 13 | Parametri indicativi nel preventivo; non sostituiscono un patto |
 | Spese generali | D.M. 55 art. 2 comma 2 | 15% del compenso calcolato |
 | Variazione ordinaria civile/penale | D.M. 55 artt. 4 comma 1, 12 comma 1 aggiornati | 50%, 100%, 150% del medio; arrotondamento per fase ai centesimi HALF_UP |
+| Aumento per complessità | D.M. 55 artt. 4 comma 1, 12 comma 1 | Percentuale scelta e motivata da 0% a 50% sul medio; esposta come scenario applicato, senza sommarla al massimo |
 | Fasi svolte | D.M. 55 artt. 4 comma 5, 12 comma 3 | Solo fasi scelte; celle penali vuote escluse, non trattate come compensi zero |
 | Valore civile | D.M. 55 art. 5 | Valore determinato dall’avvocato secondo finalità: domanda/attribuito/interesse effettivo; non dal motore |
 | Indeterminabile | Art. 5 comma 6 | Scaglione esplicito e motivato: fino a 52.000 o 260.000; 520.000 per particolare importanza |
@@ -31,7 +32,7 @@ Verifica delle fonti: 8 ottobre 2026. La versione consolidata del D.M. 55/2014 c
 | Minorenni penale | Art. 12 comma 3-ter | Selezione da parte dell’avvocato dell’autorità competente per adulto |
 | CPA/IVA/ritenuta | Fonti previdenziali/fiscali sopra | CPA 4% su compenso + spese generali; IVA 22% sulla stessa base + CPA; ritenuta 20% sulla base senza CPA/IVA/art.15 |
 
-Sequenza riproducibile: medio tabellare × variazione ordinaria × eventuale regola di fase × (1 + percentuale pluralità), arrotondamento singola fase; somma fasi; spese generali; CPA; IVA; anticipazioni; sottrazione ritenuta. Ogni voce è arrotondata a due decimali. Gli estremi restano quelli della variazione ordinaria con le sole modifiche confermate.
+Sequenza riproducibile: medio tabellare × variazione ordinaria, oppure medio × (1 + percentuale complessità) per lo scenario applicato; poi eventuale regola di fase × (1 + percentuale pluralità), arrotondamento singola fase; somma fasi; spese generali; CPA; IVA; anticipazioni; sottrazione ritenuta. Ogni voce è arrotondata a due decimali. Gli estremi restano quelli della variazione ordinaria con le sole modifiche confermate.
 
 Il prospetto al soccombente richiede conferma sulla recuperabilità IVA: se detraibile per il cliente non viene aggiunta al rimborso. La ritenuta, legata al pagamento, è esclusa dal prospetto di liquidazione al soccombente; eventuale distrazione richiede valutazione separata.
 
