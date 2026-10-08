@@ -1,6 +1,6 @@
 # Compatibilità e stato delle verifiche
 
-Data: 8 ottobre 2026. Motore 1.0.0; Python 3.10+ standard library. Verifica locale effettuata su Linux, Python 3.12.14.
+Data: 8 ottobre 2026. Motore 1.1.0; Python 3.10+ standard library. Verifica locale effettuata su Linux, Python 3.12.14.
 
 | Ambiente | Evidenza | Stato |
 |---|---|---|
