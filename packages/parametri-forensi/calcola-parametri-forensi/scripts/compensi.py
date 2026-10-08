@@ -284,6 +284,9 @@ def unique_object(pairs):
 
 
 def main(argv=None):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset', type=Path, help='Dataset versionato alternativo, revisionato')
     sub = parser.add_subparsers(dest='command', required=True)
@@ -300,7 +303,7 @@ def main(argv=None):
         elif args.command == 'verify-data':
             result = {'status': 'ok', 'dataset_version': data['dataset_version'], 'sha256': digest, 'tables': len(data['tables'])}
         else:
-            source = sys.stdin.read() if args.input == '-' else Path(args.input).read_text(encoding='utf-8-sig')
+            source = sys.stdin.buffer.read().decode('utf-8-sig') if args.input == '-' else Path(args.input).read_text(encoding='utf-8-sig')
             request = json.loads(source, object_pairs_hook=unique_object)
             result = calculate(request, data, digest)
             if args.output and result['status'] == 'ok':

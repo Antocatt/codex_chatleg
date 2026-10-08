@@ -15,13 +15,13 @@ import install
 
 
 def civil(**changes):
-    obj = json.loads((ROOT / 'examples/input-civile.json').read_text())
+    obj = json.loads((ROOT / 'examples/input-civile.json').read_text(encoding='utf-8'))
     obj.update(changes)
     return obj
 
 
 def penal(**changes):
-    obj = json.loads((ROOT / 'examples/input-penale.json').read_text())
+    obj = json.loads((ROOT / 'examples/input-penale.json').read_text(encoding='utf-8'))
     obj.update(changes)
     return obj
 
@@ -140,14 +140,14 @@ class CalculationTests(unittest.TestCase):
     def test_bad_dataset_column_count(self):
         d,h=c.load_dataset();d=copy.deepcopy(d);d['tables']['tribunale']['phases']['studio'].pop()
         with tempfile.TemporaryDirectory() as tmp:
-            p=Path(tmp)/'data.json';p.write_text(json.dumps(d))
+            p=Path(tmp)/'data.json';p.write_text(json.dumps(d), encoding='utf-8')
             with self.assertRaises(c.InputError):c.load_dataset(p)
 
 
 class SourceTests(unittest.TestCase):
     def test_all_civil_cells_match_official_html_independently(self):
         # Independent HTML table extraction vs dataset extracted from official PDF layout.
-        s=(ROOT/'references/allegato-gu.txt').read_text()
+        s=(ROOT/'references/allegato-gu.txt').read_text(encoding='utf-8')
         headers=list(re.finditer(r'^\s*(\d+(?:-BIS)?)\.\s+[A-Z][A-Z ,/ÀÈÙ]+\s*$',s,re.M))
         data,_=c.load_dataset()
         for table in data['tables'].values():
@@ -166,7 +166,7 @@ class SourceTests(unittest.TestCase):
             self.assertEqual(rows,list(table['phases'].values()),n)
 
     def test_first_seven_penal_columns_against_official_html(self):
-        source=(ROOT/'references/allegato-gu.txt').read_text()
+        source=(ROOT/'references/allegato-gu.txt').read_text(encoding='utf-8')
         block=source[source.index('15. GIUDIZI PENALI'):source.index('16. PROCEDURE')]
         rows=[]
         for line in block.splitlines():
@@ -182,14 +182,14 @@ class SourceTests(unittest.TestCase):
 
     def test_source_integrity_manifest(self):
         import hashlib
-        manifest=json.loads((ROOT/'references/sources.json').read_text())
+        manifest=json.loads((ROOT/'references/sources.json').read_text(encoding='utf-8'))
         for name,digest in manifest['snapshots_sha256'].items():
             self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest,name)
 
 
 class IntegrationTests(unittest.TestCase):
     def run_cli(self,*args,input=None):
-        return subprocess.run([sys.executable,str(ROOT/'scripts/compensi.py'),*args],input=input,text=True,capture_output=True)
+        return subprocess.run([sys.executable,str(ROOT/'scripts/compensi.py'),*args],input=input,text=True,encoding="utf-8",capture_output=True)
 
     def test_cli_exports_and_no_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -197,7 +197,7 @@ class IntegrationTests(unittest.TestCase):
             r=self.run_cli('calculate',str(ROOT/'examples/input-civile.json'),'--output',str(prefix))
             self.assertEqual(r.returncode,0,r.stderr)
             self.assertEqual({p.suffix for p in Path(tmp).iterdir()},{'.json','.html','.csv'})
-            self.assertEqual(json.loads(prefix.with_suffix('.json').read_text())['totals']['medio']['totale_lordo'],'7407.95')
+            self.assertEqual(json.loads(prefix.with_suffix('.json').read_text(encoding='utf-8'))['totals']['medio']['totale_lordo'],'7407.95')
             again=self.run_cli('calculate',str(ROOT/'examples/input-civile.json'),'--output',str(prefix))
             self.assertEqual(again.returncode,1)
 
@@ -213,13 +213,13 @@ class IntegrationTests(unittest.TestCase):
             for agent in ['codex','codex-legacy','claude']:
                 target=install.install(agent,home)
                 self.assertTrue((target/'SKILL.md').exists())
-                run=subprocess.run([sys.executable,str(target/'scripts/compensi.py'),'calculate',str(target/'examples/input-penale.json')],cwd=home,text=True,capture_output=True)
+                run=subprocess.run([sys.executable,str(target/'scripts/compensi.py'),'calculate',str(target/'examples/input-penale.json')],cwd=home,text=True,encoding="utf-8",capture_output=True)
                 self.assertEqual(run.returncode,0,run.stderr)
                 with self.assertRaises(FileExistsError):install.install(agent,home)
 
     def test_frontmatter_loader_contract(self):
         # Static contract, not a claim of executing Codex's Rust loader.
-        text=(ROOT/'SKILL.md').read_text()
+        text=(ROOT/'SKILL.md').read_text(encoding='utf-8')
         self.assertTrue(text.startswith('---\n'))
         front=text.split('---',2)[1]
         name=re.search(r'^name: (.+)$',front,re.M)[1]

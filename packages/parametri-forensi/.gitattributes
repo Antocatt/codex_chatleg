@@ -1,0 +1,5 @@
+# Keep normative snapshot and dataset bytes identical on every OS.
+calcola-parametri-forensi/references/*.html -text
+calcola-parametri-forensi/references/*.txt -text
+calcola-parametri-forensi/references/*.png -text
+calcola-parametri-forensi/data/*.json -text
