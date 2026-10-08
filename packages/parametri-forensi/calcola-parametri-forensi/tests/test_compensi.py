@@ -101,6 +101,39 @@ class CalculationTests(unittest.TestCase):
                 self.assertEqual(r['status'],'ok')
         with self.assertRaises(c.InputError):c.calculate(civil(adjustments={'subjects':2,'plurality_percent':'31','plurality_confirmed':True,'reason':'Test'}))
 
+    def test_quick_asks_only_core_fields(self):
+        r=c.quick_calculate({'table':'penale-tribunale-collegiale'})
+        self.assertEqual([q['field'] for q in r['questions']], ['phases','cpa','vat'])
+        civil_missing=c.quick_calculate({'table':'tribunale','phases':['studio'],'cpa':True,'vat':True})
+        self.assertEqual([q['field'] for q in civil_missing['questions']], ['value'])
+
+    def test_quick_complexity_and_max_plurality(self):
+        r=c.quick_calculate({
+            'table':'penale-tribunale-collegiale',
+            'phases':['studio','introduttiva','istruttoria','decisionale'],
+            'cpa':True,
+            'vat':True,
+            'complexity_percent':'25',
+            'complexity_reason':'Procedimento complesso',
+            'subjects':3,
+            'plurality_percent':'max',
+            'plurality_confirmed':True,
+        })
+        self.assertEqual(r['status'],'ok')
+        self.assertEqual(r['lines'][0]['plurality_percent'],'60')
+        self.assertIn('applicato',r['totals'])
+        self.assertLess(c.Decimal(r['totals']['medio']['compenso']),c.Decimal(r['totals']['applicato']['compenso']))
+        self.assertLess(c.Decimal(r['totals']['applicato']['compenso']),c.Decimal(r['totals']['massimo']['compenso']))
+
+    def test_quick_plurality_requires_confirmation_and_percentage(self):
+        r=c.quick_calculate({'table':'penale-tribunale-collegiale','phases':['studio'],'cpa':True,'vat':True,'subjects':2})
+        self.assertEqual([q['field'] for q in r['questions']], ['plurality_confirmed','plurality_percent'])
+
+    def test_complexity_above_fifty_refused(self):
+        with self.assertRaises(c.InputError):
+            c.quick_calculate({'table':'penale-tribunale-collegiale','phases':['studio'],'cpa':True,'vat':True,
+                               'complexity_percent':'51','complexity_reason':'Test'})
+
     def test_soccombente_vat_must_be_confirmed(self):
         req=civil(purpose='soccombente',completed_on='2026-10-01')
         self.assertEqual(c.calculate(req)['status'],'needs_input')
@@ -201,6 +234,18 @@ class IntegrationTests(unittest.TestCase):
             self.assertEqual(json.loads(prefix.with_suffix('.json').read_text(encoding='utf-8'))['totals']['medio']['totale_lordo'],'7407.95')
             again=self.run_cli('calculate',str(ROOT/'examples/input-civile.json'),'--output',str(prefix))
             self.assertEqual(again.returncode,1)
+
+    def test_cli_quick_exports_applied_column(self):
+        request={'table':'penale-tribunale-collegiale','phases':['studio'],'cpa':True,'vat':True,
+                 'complexity_percent':'20','complexity_reason':'Complessità dichiarata'}
+        with tempfile.TemporaryDirectory() as tmp:
+            prefix=Path(tmp)/'rapido'
+            r=self.run_cli('quick','-','--output',str(prefix),input=json.dumps(request))
+            self.assertEqual(r.returncode,0,r.stderr)
+            result=json.loads(prefix.with_suffix('.json').read_text(encoding='utf-8'))
+            self.assertEqual(result['mode'],'rapido')
+            self.assertIn('applicato',result['totals'])
+            self.assertIn('Applicato EUR',prefix.with_suffix('.csv').read_text(encoding='utf-8-sig'))
 
     def test_cli_exit_codes_and_duplicate_keys(self):
         self.assertEqual(self.run_cli('calculate','-',input='{}').returncode,2)
