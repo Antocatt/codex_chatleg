@@ -1,0 +1,26 @@
+name: Parametri forensi skill
+on:
+  push:
+    paths:
+      - 'packages/parametri-forensi/**'
+      - '.github/workflows/parametri-forensi.yml'
+  pull_request:
+    paths:
+      - 'packages/parametri-forensi/**'
+      - '.github/workflows/parametri-forensi.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ['3.10', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s packages/parametri-forensi/calcola-parametri-forensi/tests -v
+      - run: python packages/parametri-forensi/calcola-parametri-forensi/scripts/compensi.py verify-data

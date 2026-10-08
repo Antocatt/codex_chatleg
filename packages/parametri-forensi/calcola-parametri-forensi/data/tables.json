@@ -1,0 +1,1028 @@
+{
+  "schema_version": 1,
+  "dataset_version": "dm147-2022-v1.0.0",
+  "verified_on": "2026-10-08",
+  "effective_from": "2022-10-23",
+  "source_url": "https://www.gazzettaufficiale.it/eli/gu/2022/10/08/236/sg/pdf",
+  "ordinary_factors": {
+    "minimo": "0.50",
+    "medio": "1.00",
+    "massimo": "1.50"
+  },
+  "general_expenses_rate": "15",
+  "cpa_rate": "4",
+  "vat_rate": "22",
+  "withholding_rate": "20",
+  "tables": {
+    "giudice-pace": {
+      "number": "1",
+      "label": "GIUDICE DI PACE",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000"
+      ],
+      "phases": {
+        "studio": [
+          "68.00",
+          "236.00",
+          "425.00"
+        ],
+        "introduttiva": [
+          "68.00",
+          "252.00",
+          "352.00"
+        ],
+        "istruttoria": [
+          "68.00",
+          "352.00",
+          "567.00"
+        ],
+        "decisionale": [
+          "142.00",
+          "425.00",
+          "746.00"
+        ]
+      }
+    },
+    "tribunale": {
+      "number": "2",
+      "label": "GIUDIZI ORDINARI E SOMMARI DI COGNIZIONE INNANZI AL TRIBUNALE",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "131.00",
+          "425.00",
+          "919.00",
+          "1701.00",
+          "2552.00",
+          "3544.00"
+        ],
+        "introduttiva": [
+          "131.00",
+          "425.00",
+          "777.00",
+          "1204.00",
+          "1628.00",
+          "2338.00"
+        ],
+        "istruttoria": [
+          "200.00",
+          "851.00",
+          "1680.00",
+          "1806.00",
+          "5670.00",
+          "10411.00"
+        ],
+        "decisionale": [
+          "200.00",
+          "851.00",
+          "1701.00",
+          "2905.00",
+          "4253.00",
+          "6164.00"
+        ]
+      }
+    },
+    "lavoro": {
+      "number": "3",
+      "label": "CAUSE DI LAVORO",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "210.00",
+          "888.00",
+          "1822.00",
+          "3245.00",
+          "4763.00",
+          "6668.00"
+        ],
+        "introduttiva": [
+          "126.00",
+          "425.00",
+          "777.00",
+          "1202.00",
+          "1701.00",
+          "2336.00"
+        ],
+        "istruttoria": [
+          "126.00",
+          "567.00",
+          "1172.00",
+          "1880.00",
+          "2678.00",
+          "3623.00"
+        ],
+        "decisionale": [
+          "179.00",
+          "746.00",
+          "1617.00",
+          "2930.00",
+          "4253.00",
+          "6290.00"
+        ]
+      }
+    },
+    "previdenza": {
+      "number": "4",
+      "label": "CAUSE DI PREVIDENZA",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "131.00",
+          "425.00",
+          "929.00",
+          "1701.00",
+          "2552.00",
+          "3544.00"
+        ],
+        "introduttiva": [
+          "121.00",
+          "425.00",
+          "777.00",
+          "1204.00",
+          "1701.00",
+          "2336.00"
+        ],
+        "istruttoria": [
+          "179.00",
+          "851.00",
+          "1664.00",
+          "2693.00",
+          "3827.00",
+          "5171.00"
+        ],
+        "decisionale": [
+          "247.00",
+          "919.00",
+          "2021.00",
+          "3675.00",
+          "4148.00",
+          "7865.00"
+        ]
+      }
+    },
+    "convalida-locatizia": {
+      "number": "5",
+      "label": "PROCEDIMENTI PER CONVALIDA LOCATIZIA",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "179.00",
+          "530.00",
+          "919.00",
+          "1701.00",
+          "2478.00",
+          "3544.00"
+        ],
+        "introduttiva": [
+          "179.00",
+          "494.00",
+          "709.00",
+          "1061.00",
+          "1418.00",
+          "1559.00"
+        ],
+        "istruttoria": [
+          "42.00",
+          "142.00",
+          "210.00",
+          "352.00",
+          "494.00",
+          "709.00"
+        ],
+        "decisionale": [
+          "142.00",
+          "425.00",
+          "746.00",
+          "1344.00",
+          "1911.00",
+          "2835.00"
+        ]
+      }
+    },
+    "precetto": {
+      "number": "6",
+      "label": "ATTO DI PRECETTO",
+      "kind": "civile",
+      "upper_bounds": [
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "compenso": [
+          "142.00",
+          "236.00",
+          "331.00",
+          "425.00",
+          "567.00"
+        ]
+      }
+    },
+    "volontaria": {
+      "number": "7",
+      "label": "PROCEDIMENTI DI VOLONTARIA GIURISDIZIONE",
+      "kind": "civile",
+      "upper_bounds": [
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "compenso": [
+          "425.00",
+          "1418.00",
+          "2336.00",
+          "3329.00",
+          "4536.00"
+        ]
+      }
+    },
+    "monitorio": {
+      "number": "8",
+      "label": "PROCEDIMENTI MONITORI",
+      "kind": "civile",
+      "upper_bounds": [
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "compenso": [
+          "473.00",
+          "567.00",
+          "1370.00",
+          "2242.00",
+          "4394.00"
+        ]
+      }
+    },
+    "istruzione-preventiva": {
+      "number": "9",
+      "label": "PROCEDIMENTI DI ISTRUZIONE PREVENTIVA",
+      "kind": "civile",
+      "upper_bounds": [
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "210.00",
+          "567.00",
+          "992.00",
+          "1134.00",
+          "2126.00"
+        ],
+        "introduttiva": [
+          "284.00",
+          "709.00",
+          "788.00",
+          "992.00",
+          "1454.00"
+        ],
+        "istruttoria": [
+          "352.00",
+          "1061.00",
+          "1276.00",
+          "1701.00",
+          "2336.00"
+        ]
+      }
+    },
+    "cautelare": {
+      "number": "10",
+      "label": "PROCEDIMENTI CAUTELARI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "210.00",
+          "567.00",
+          "992.00",
+          "1175.00",
+          "2251.00",
+          "3686.00"
+        ],
+        "introduttiva": [
+          "142.00",
+          "352.00",
+          "672.00",
+          "851.00",
+          "1202.00",
+          "1559.00"
+        ],
+        "istruttoria": [
+          "210.00",
+          "851.00",
+          "1204.00",
+          "1985.00",
+          "2835.00",
+          "3969.00"
+        ],
+        "decisionale": [
+          "105.00",
+          "389.00",
+          "635.00",
+          "1202.00",
+          "1771.00",
+          "2552.00"
+        ]
+      }
+    },
+    "corte-conti": {
+      "number": "11",
+      "label": "GIUDIZI INNANZI ALLA CORTE DEI CONTI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "179.00",
+          "536.00",
+          "919.00",
+          "1775.00",
+          "2478.00",
+          "3686.00"
+        ],
+        "introduttiva": [
+          "105.00",
+          "320.00",
+          "494.00",
+          "709.00",
+          "1061.00",
+          "1418.00"
+        ],
+        "istruttoria": [
+          "105.00",
+          "352.00",
+          "567.00",
+          "919.00",
+          "1276.00",
+          "1775.00"
+        ],
+        "decisionale": [
+          "179.00",
+          "604.00",
+          "1061.00",
+          "1911.00",
+          "2762.00",
+          "4043.00"
+        ]
+      }
+    },
+    "appello": {
+      "number": "12",
+      "label": "GIUDIZI INNANZI ALLA CORTE DI APPELLO",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "142.00",
+          "536.00",
+          "1134.00",
+          "2058.00",
+          "2977.00",
+          "4389.00"
+        ],
+        "introduttiva": [
+          "142.00",
+          "536.00",
+          "921.00",
+          "1418.00",
+          "1911.00",
+          "2552.00"
+        ],
+        "istruttoria": [
+          "179.00",
+          "992.00",
+          "1843.00",
+          "3045.00",
+          "4326.00",
+          "5880.00"
+        ],
+        "decisionale": [
+          "210.00",
+          "851.00",
+          "1911.00",
+          "3470.00",
+          "5103.00",
+          "7298.00"
+        ]
+      }
+    },
+    "cassazione": {
+      "number": "13",
+      "label": "GIUDIZI INNANZI ALLA CORTE DI CASSAZIONE E ALLE GIURISDIZIONI SUPERIORI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "252.00",
+          "709.00",
+          "1276.00",
+          "2336.00",
+          "3402.00",
+          "4961.00"
+        ],
+        "introduttiva": [
+          "284.00",
+          "777.00",
+          "1134.00",
+          "1969.00",
+          "2478.00",
+          "3260.00"
+        ],
+        "decisionale": [
+          "142.00",
+          "389.00",
+          "672.00",
+          "1208.00",
+          "1775.00",
+          "2552.00"
+        ]
+      }
+    },
+    "corti-superiori": {
+      "number": "14",
+      "label": "GIUDIZI INNANZI ALLA CORTE COSTITUZIONALE, ALLA CORTE EUROPEA, ALLA CORTE DI GIUSTIZIA UE",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "252.00",
+          "919.00",
+          "1985.00",
+          "3686.00",
+          "5387.00",
+          "7796.00"
+        ],
+        "introduttiva": [
+          "210.00",
+          "777.00",
+          "1344.00",
+          "2058.00",
+          "2905.00",
+          "3885.00"
+        ],
+        "istruttoria": [
+          "142.00",
+          "709.00",
+          "1344.00",
+          "2195.00",
+          "3119.00",
+          "4253.00"
+        ],
+        "decisionale": [
+          "142.00",
+          "777.00",
+          "1344.00",
+          "2478.00",
+          "3612.00",
+          "5177.00"
+        ]
+      }
+    },
+    "esecuzione-mobiliare": {
+      "number": "16",
+      "label": "PROCEDURE ESECUTIVE MOBILIARI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "126.00",
+          "368.00",
+          "552.00",
+          "861.00",
+          "1166.00",
+          "1533.00"
+        ],
+        "istruttoria": [
+          "63.00",
+          "184.00",
+          "305.00",
+          "494.00",
+          "735.00",
+          "982.00"
+        ]
+      }
+    },
+    "esecuzione-terzi": {
+      "number": "17",
+      "label": "PROCEDURE ESECUTIVE PRESSO TERZI, PER CONSEGNA E RILASCIO, IN FORMA SPECIFICA",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "introduttiva": [
+          "110.00",
+          "331.00",
+          "552.00",
+          "861.00",
+          "1166.00",
+          "1533.00"
+        ],
+        "trattazione": [
+          "236.00",
+          "567.00",
+          "851.00",
+          "1360.00",
+          "1927.00",
+          "2604.00"
+        ]
+      }
+    },
+    "esecuzione-immobiliare": {
+      "number": "18",
+      "label": "PROCEDURE ESECUTIVE IMMOBILIARI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "147.00",
+          "452.00",
+          "683.00",
+          "1050.00",
+          "1433.00",
+          "1890.00"
+        ],
+        "istruttoria": [
+          "76.00",
+          "299.00",
+          "452.00",
+          "677.00",
+          "982.00",
+          "1281.00"
+        ]
+      }
+    },
+    "tavolare": {
+      "number": "19",
+      "label": "ISCRIZIONE IPOTECARIA / AFFARI TAVOLARI",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "compenso": [
+          "68.00",
+          "284.00",
+          "425.00",
+          "709.00",
+          "992.00",
+          "1344.00"
+        ]
+      }
+    },
+    "fallimento": {
+      "number": "20",
+      "label": "PROCEDIMENTI PER DICHIARAZIONE DI FALLIMENTO",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "compenso": [
+          "168.00",
+          "620.00",
+          "903.00",
+          "1470.00",
+          "2095.00",
+          "2888.00"
+        ]
+      }
+    },
+    "passivo": {
+      "number": "20-bis",
+      "label": "ACCERTAMENTO DEL PASSIVO NEL FALLIMENTO E NELLA LIQUIDAZIONE GIUDIZIALE",
+      "kind": "civile",
+      "upper_bounds": [
+        "1100",
+        "5200",
+        "26000",
+        "52000",
+        "260000",
+        "520000"
+      ],
+      "phases": {
+        "studio": [
+          "168.00",
+          "341.00",
+          "735.00",
+          "1344.00",
+          "2042.00",
+          "2835.00"
+        ],
+        "introduttiva": [
+          "105.00",
+          "341.00",
+          "620.00",
+          "966.00",
+          "1302.00",
+          "1869.00"
+        ],
+        "istruttoria": [
+          "158.00",
+          "683.00",
+          "1344.00",
+          "1444.00",
+          "4536.00",
+          "8327.00"
+        ],
+        "decisionale": [
+          "158.00",
+          "683.00",
+          "1344.00",
+          "2326.00",
+          "3402.00",
+          "4930.00"
+        ]
+      }
+    },
+    "penale-giudice-pace": {
+      "number": "15",
+      "label": "Giudice Pace",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "378.00"
+        ],
+        "introduttiva": [
+          "473.00"
+        ],
+        "istruttoria": [
+          "756.00"
+        ],
+        "decisionale": [
+          "662.00"
+        ]
+      }
+    },
+    "penale-indagini-preliminari": {
+      "number": "15",
+      "label": "Indagini Preliminari",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "851.00"
+        ],
+        "introduttiva": [
+          "662.00"
+        ],
+        "istruttoria": [
+          "1040.00"
+        ],
+        "decisionale": [
+          "1229.00"
+        ]
+      }
+    },
+    "penale-indagini-difensive": {
+      "number": "15",
+      "label": "Indagini Difensive",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "851.00"
+        ],
+        "istruttoria": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-convalida-arresto": {
+      "number": "15",
+      "label": "Convalida Arresto",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "378.00"
+        ],
+        "istruttoria": [
+          "473.00"
+        ],
+        "decisionale": [
+          "709.00"
+        ]
+      }
+    },
+    "penale-cautelari-personali": {
+      "number": "15",
+      "label": "Cautelari Personali",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "378.00"
+        ],
+        "introduttiva": [
+          "1229.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-cautelari-reali": {
+      "number": "15",
+      "label": "Cautelari Reali",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "378.00"
+        ],
+        "introduttiva": [
+          "1229.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-gip-gup": {
+      "number": "15",
+      "label": "Gip Gup",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "851.00"
+        ],
+        "introduttiva": [
+          "756.00"
+        ],
+        "istruttoria": [
+          "1040.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-tribunale-monocratico": {
+      "number": "15",
+      "label": "Tribunale Monocratico",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "473.00"
+        ],
+        "introduttiva": [
+          "567.00"
+        ],
+        "istruttoria": [
+          "1134.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-tribunale-collegiale": {
+      "number": "15",
+      "label": "Tribunale Collegiale",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "473.00"
+        ],
+        "introduttiva": [
+          "756.00"
+        ],
+        "istruttoria": [
+          "1418.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-assise": {
+      "number": "15",
+      "label": "Assise",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "756.00"
+        ],
+        "introduttiva": [
+          "1418.00"
+        ],
+        "istruttoria": [
+          "2363.00"
+        ],
+        "decisionale": [
+          "2835.00"
+        ]
+      }
+    },
+    "penale-tribunale-sorveglianza": {
+      "number": "15",
+      "label": "Tribunale Sorveglianza",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "473.00"
+        ],
+        "introduttiva": [
+          "945.00"
+        ],
+        "istruttoria": [
+          "1418.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-magistrato-sorveglianza": {
+      "number": "15",
+      "label": "Magistrato Sorveglianza",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "315.00"
+        ],
+        "introduttiva": [
+          "378.00"
+        ],
+        "decisionale": [
+          "945.00"
+        ]
+      }
+    },
+    "penale-appello": {
+      "number": "15",
+      "label": "Appello",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "473.00"
+        ],
+        "introduttiva": [
+          "945.00"
+        ],
+        "istruttoria": [
+          "1418.00"
+        ],
+        "decisionale": [
+          "1418.00"
+        ]
+      }
+    },
+    "penale-assise-appello": {
+      "number": "15",
+      "label": "Assise Appello",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "756.00"
+        ],
+        "introduttiva": [
+          "1985.00"
+        ],
+        "istruttoria": [
+          "2268.00"
+        ],
+        "decisionale": [
+          "2336.00"
+        ]
+      }
+    },
+    "penale-cassazione": {
+      "number": "15",
+      "label": "Cassazione",
+      "kind": "penale",
+      "upper_bounds": [],
+      "phases": {
+        "studio": [
+          "945.00"
+        ],
+        "introduttiva": [
+          "2646.00"
+        ],
+        "decisionale": [
+          "2741.00"
+        ]
+      }
+    }
+  }
+}
