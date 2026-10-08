@@ -60,12 +60,30 @@ I comandi vanno eseguiti con percorsi assoluti o dalla cartella skill. Tutti gli
 ```sh
 python3 scripts/compensi.py catalog
 python3 scripts/compensi.py verify-data
+python3 scripts/compensi.py quick examples/input-rapido-penale.json --output /percorso/esistente/prospetto-rapido
 python3 scripts/compensi.py calculate examples/input-civile.json --output /percorso/esistente/prospetto-civile
 python3 scripts/compensi.py calculate examples/input-penale.json --output /percorso/esistente/prospetto-penale
 python3 -m unittest discover -s tests -v
 ```
 
 Su Windows usare `py -3`, ad esempio `--output "C:\Utenti\Nome\Documenti\prospetto"`. La directory deve già esistere; il prefisso non deve avere estensione. Il comando crea `.json`, `.html`, `.csv`, senza sovrascrivere output esistenti.
+
+`quick` è il percorso normale della skill e richiede soltanto questi dati:
+
+| Campo | Obbligo e valori |
+|---|---|
+| `table` | Autorità o procedimento restituito da `catalog` |
+| `phases` | Fasi effettivamente svolte o previste |
+| `value` | Solo civile: valore della controversia o `indeterminabile` |
+| `cpa`, `vat` | Booleani `true`/`false` |
+| `expenses_art15` | Facoltativo; anticipazioni documentate, oltre alle spese generali automatiche del 15% |
+| `complexity_percent` | Facoltativo; aumento da 0 a 50 sul valore medio, con `complexity_reason` |
+| `subjects` | Facoltativo; numero da 2 a 30 |
+| `plurality_percent` | Facoltativo; `"max"` oppure percentuale inferiore, con `plurality_confirmed: true` |
+
+La complessità genera una colonna `applicato` compresa tra medio e massimo. Non si aggiunge al massimo. La pluralità è invece una regola distinta e può aumentare tutti i livelli entro il tetto calcolato dal motore.
+
+Il comando `calculate` conserva il percorso avanzato per liquidazioni che richiedono date, ritenuta, distinzione cliente/soccombente o altre verifiche:
 
 | Campo | Obbligo e valori |
 |---|---|
@@ -84,7 +102,7 @@ Su Windows usare `py -3`, ad esempio `--output "C:\Utenti\Nome\Documenti\prospet
 | `special_cases` | `[]` solo in assenza di casi fuori copertura; altrimenti elenco che ferma il calcolo |
 | `non_contentious` | `true` richiesto per tabella volontaria |
 | `title` | Facoltativo, testo generico di massimo 300 caratteri |
-| `adjustments` | Facoltativo, tre modifiche qui sotto con `reason` obbligatoria |
+| `adjustments` | Facoltativo, modifiche qui sotto con `reason` obbligatoria |
 
 Esempi di modifiche consentite:
 
@@ -101,7 +119,13 @@ Sostituisce la fase decisionale civile scelta con compenso maggiorato del 25%. N
 Solo per `penale-indagini-difensive`: +20%.
 
 ```json
-{"subjects": 2, "plurality_percent": "30", "plurality_confirmed": true, "reason": "Stessa posizione processuale, questioni specifiche distinte; aumento richiesto"}
+{"complexity_percent": "25", "reason": "Numero e complessità delle questioni trattate"}
+```
+
+Produce un importo applicato pari al medio aumentato del 25%, senza superare il limite del 50%.
+
+```json
+{"subjects": 2, "plurality_percent": "max", "plurality_confirmed": true, "reason": "Stessa posizione processuale, questioni specifiche distinte; aumento richiesto"}
 ```
 
 Il tetto è verificato, ma l’applicabilità e la misura rimangono scelte motivate dell’avvocato. Non usare per due coniugi, questioni identiche o più difensori: sono regole diverse, fuori copertura.
@@ -135,6 +159,6 @@ Un dataset alternativo si carica con `python3 scripts/compensi.py --dataset /per
 
 ## 6. Master
 
-Distribuire una copia identica del pacchetto a ogni partecipante. Fare eseguire prima `verify-data`, poi l’esempio civile. Chiedere poi «calcolami una parcella penale» per mostrare la raccolta dei dati mancanti. Mostrare anche un caso di patrocinio Stato: il comportamento corretto nella v1 è fermarsi.
+Distribuire una copia identica del pacchetto a ogni partecipante. Fare eseguire prima `verify-data`, poi l’esempio rapido. Chiedere quindi «calcolami i parametri penali davanti al Tribunale collegiale, tutte le fasi, con IVA e CPA» per mostrare che l’agente domanda soltanto i dati mancanti. In un secondo esempio aggiungere complessità e tre assistiti per mostrare separatamente i due aumenti.
 
 I calcoli funzionano offline. Le richieste in linguaggio naturale possono essere inviate al fornitore dell’agente: usare casi sintetici e titoli generici durante la formazione. Non occorre inviare fascicoli giudiziari per calcolare un compenso.
