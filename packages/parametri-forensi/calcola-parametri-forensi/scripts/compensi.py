@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CENT = Decimal('0.01')
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 
 class InputError(ValueError):
@@ -92,7 +92,117 @@ QUESTIONS = {
 REQUIRED = ['purpose', 'table', 'phases', 'tax_regime', 'cpa', 'withholding',
             'expenses_art15', 'normative_date', 'special_cases']
 OPTIONAL = ['value', 'value_basis', 'band', 'band_reason', 'completed_on',
-            'non_contentious', 'expenses_art15_confirmed', 'title', 'adjustments', 'vat_recoverable']
+            'non_contentious', 'expenses_art15_confirmed', 'title', 'adjustments',
+            'vat_recoverable', 'vat']
+
+QUICK_QUESTIONS = {
+    'table': 'Qual è l’autorità giudiziaria o il procedimento? Consultare il comando catalog.',
+    'phases': 'Quali fasi vuoi conteggiare?',
+    'value': 'Qual è il valore della controversia? Questo dato serve solo nel civile.',
+    'cpa': 'Includere il contributo integrativo Cassa Forense del 4%?',
+    'vat': 'Includere l’IVA del 22%?',
+    'band': 'Per il valore indeterminabile, quale scaglione applicare: 52000, 260000 o 520000?',
+    'band_reason': 'Qual è la ragione della scelta dello scaglione per il valore indeterminabile?',
+    'non_contentious': 'Confermare che il procedimento di volontaria giurisdizione è non contenzioso.',
+    'expenses_art15_confirmed': 'Le spese indicate sono anticipazioni documentate in nome e per conto del cliente ex art. 15?',
+    'plurality_confirmed': 'Confermare i presupposti dell’aumento per pluralità: stessa posizione e attività riferite a situazioni distinte.',
+    'plurality_percent': 'Applicare l’aumento massimo previsto per il numero di soggetti oppure una percentuale inferiore?',
+}
+QUICK_ALLOWED = {
+    'table', 'phases', 'value', 'band', 'band_reason', 'non_contentious',
+    'cpa', 'vat', 'expenses_art15', 'expenses_art15_confirmed', 'title',
+    'complexity_percent', 'complexity_reason', 'subjects',
+    'plurality_percent', 'plurality_confirmed', 'plurality_reason',
+}
+
+
+def quick_calculate(request, dataset=None, dataset_hash=None):
+    """Convertire un input essenziale nel formato verificabile del motore completo."""
+    if dataset is None:
+        dataset, dataset_hash = load_dataset()
+    if not isinstance(request, dict):
+        raise InputError('Richiesta JSON rapida: oggetto richiesto')
+    unknown = set(request) - QUICK_ALLOWED
+    if unknown:
+        raise InputError('Campi rapidi non riconosciuti: ' + ', '.join(sorted(unknown)))
+    missing = [f for f in ['table', 'phases', 'cpa', 'vat'] if f not in request]
+    table = dataset['tables'].get(request.get('table')) if isinstance(request.get('table'), str) else None
+    if request.get('table') is not None and table is None:
+        raise InputError('Tabella non supportata: usare catalog; non inventare una tabella analoga')
+    if table and table['kind'] == 'civile' and 'value' not in request:
+        missing.append('value')
+    if request.get('value') == 'indeterminabile':
+        missing += [f for f in ['band', 'band_reason'] if f not in request]
+    if request.get('table') == 'volontaria' and 'non_contentious' not in request:
+        missing.append('non_contentious')
+    expenses = number(request.get('expenses_art15', '0'), 'expenses_art15')
+    if expenses > 0 and 'expenses_art15_confirmed' not in request:
+        missing.append('expenses_art15_confirmed')
+    subjects = request.get('subjects', 1)
+    if type(subjects) is not int or subjects < 1 or subjects > 30:
+        raise InputError('subjects: numero intero da 1 a 30')
+    if subjects > 1:
+        if 'plurality_confirmed' not in request:
+            missing.append('plurality_confirmed')
+        if 'plurality_percent' not in request:
+            missing.append('plurality_percent')
+    if missing:
+        return {'status': 'needs_input', 'questions': [
+            {'field': field, 'question': QUICK_QUESTIONS[field]} for field in dict.fromkeys(missing)
+        ]}
+    for field in ['cpa', 'vat']:
+        if type(request[field]) is not bool:
+            raise InputError(f'{field}: valore booleano richiesto')
+    complexity = number(request.get('complexity_percent', '0'), 'complexity_percent')
+    if complexity > 50:
+        raise InputError('complexity_percent: aumento massimo 50% sul valore medio')
+    if complexity and (not isinstance(request.get('complexity_reason'), str) or not request['complexity_reason'].strip()):
+        raise InputError('Motivare sinteticamente l’aumento per complessità')
+
+    advanced = {
+        'purpose': 'preventivo',
+        'table': request['table'],
+        'phases': request['phases'],
+        'tax_regime': 'non-specificato',
+        'vat': request['vat'],
+        'cpa': request['cpa'],
+        'withholding': False,
+        'expenses_art15': str(request.get('expenses_art15', '0')),
+        'normative_date': dataset['verified_on'],
+        'special_cases': [],
+        'title': request.get('title', 'Prospetto parametri forensi'),
+    }
+    if table['kind'] == 'civile':
+        advanced['value'] = request['value']
+        advanced['value_basis'] = 'Valore indicato dall’avvocato'
+        for field in ['band', 'band_reason', 'non_contentious']:
+            if field in request:
+                advanced[field] = request[field]
+    if expenses > 0:
+        advanced['expenses_art15_confirmed'] = request['expenses_art15_confirmed']
+    adjustments = {}
+    reasons = []
+    if 'complexity_percent' in request:
+        adjustments['complexity_percent'] = str(request['complexity_percent'])
+        reasons.append(request.get('complexity_reason', 'Valutazione sul valore medio'))
+    if subjects > 1:
+        adjustments.update({
+            'subjects': subjects,
+            'plurality_percent': request['plurality_percent'],
+            'plurality_confirmed': request['plurality_confirmed'],
+        })
+        if isinstance(request.get('plurality_reason'), str) and request['plurality_reason'].strip():
+            reasons.append(request['plurality_reason'])
+        else:
+            reasons.append(f'Pluralità di {subjects} soggetti confermata dall’avvocato')
+    if adjustments:
+        adjustments['reason'] = '; '.join(reasons)
+        advanced['adjustments'] = adjustments
+    result = calculate(advanced, dataset, dataset_hash)
+    if result.get('status') == 'ok':
+        result['mode'] = 'rapido'
+        result['quick_request'] = request
+    return result
 
 
 def calculate(request, dataset=None, dataset_hash=None):
@@ -113,7 +223,8 @@ def calculate(request, dataset=None, dataset_hash=None):
             missing += [f for f in ['band', 'band_reason'] if f not in request]
     if request.get('purpose') in ['cliente', 'soccombente'] and 'completed_on' not in request:
         missing.append('completed_on')
-    if request.get('purpose') == 'soccombente' and request.get('tax_regime') == 'ordinario' and 'vat_recoverable' not in request:
+    if (request.get('purpose') == 'soccombente' and request.get('tax_regime') == 'ordinario'
+            and 'vat_recoverable' not in request and 'vat' not in request):
         missing.append('vat_recoverable')
     if request.get('table') == 'volontaria' and 'non_contentious' not in request:
         missing.append('non_contentious')
@@ -136,8 +247,12 @@ def calculate(request, dataset=None, dataset_hash=None):
         if completed < iso(dataset['effective_from'], 'effective_from') or completed > normative:
             raise InputError('Data prestazione incompatibile con regime 2022 o data normativa')
     regime = request['tax_regime']
-    if regime not in ['ordinario', 'forfettario']:
-        raise InputError('Regime fiscale non supportato: solo ordinario italiano o forfettario')
+    if regime not in ['ordinario', 'forfettario', 'non-specificato']:
+        raise InputError('Regime fiscale non supportato: ordinario, forfettario o non-specificato con scelta IVA esplicita')
+    if regime == 'non-specificato' and 'vat' not in request:
+        raise InputError('Con regime non-specificato occorre scegliere esplicitamente se includere IVA')
+    if 'vat' in request and type(request['vat']) is not bool:
+        raise InputError('vat: valore booleano richiesto')
     for f in ['cpa', 'withholding']:
         if type(request[f]) is not bool:
             raise InputError(f'{f}: valore booleano richiesto')
@@ -185,7 +300,7 @@ def calculate(request, dataset=None, dataset_hash=None):
             else:
                 raise InputError('Valore oltre la tabella: art. 6 e valori oltre 520.000 non implementati nella v1')
     adj = request.get('adjustments', {})
-    if not isinstance(adj, dict) or set(adj) - {'settlement', 'complex_investigations', 'plurality_percent', 'subjects', 'plurality_confirmed', 'reason'}:
+    if not isinstance(adj, dict) or set(adj) - {'settlement', 'complex_investigations', 'complexity_percent', 'plurality_percent', 'subjects', 'plurality_confirmed', 'reason'}:
         raise InputError('adjustments: campi non validi')
     for f in ['settlement', 'complex_investigations', 'plurality_confirmed']:
         if f in adj and type(adj[f]) is not bool:
@@ -198,9 +313,18 @@ def calculate(request, dataset=None, dataset_hash=None):
         raise InputError('Conciliazione/transazione: richiede fase decisionale civile applicabile; non duplicare la fase')
     if investigation and request['table'] != 'penale-indagini-difensive':
         raise InputError('Aumento del 20% riservato alle indagini difensive complesse o urgenti')
-    plurality = number(adj.get('plurality_percent', '0'), 'plurality_percent')
+    complexity = number(adj.get('complexity_percent', '0'), 'complexity_percent')
+    if complexity > 50:
+        raise InputError('Maggiorazione per complessità superiore al limite del 50% sul medio tabellare')
+    raw_plurality = adj.get('plurality_percent', '0')
+    subjects = adj.get('subjects')
+    if raw_plurality == 'max':
+        if type(subjects) is not int or subjects < 2 or subjects > 30:
+            raise InputError('Pluralità: numero soggetti da 2 a 30 richiesto per calcolare il massimo')
+        plurality = Decimal(30 * (min(subjects, 10) - 1) + 10 * max(subjects - 10, 0))
+    else:
+        plurality = number(raw_plurality, 'plurality_percent')
     if plurality:
-        subjects = adj.get('subjects')
         if type(subjects) is not int or subjects < 2 or subjects > 30 or adj.get('plurality_confirmed') is not True:
             raise InputError('Pluralità: confermare presupposti art. 4/12 comma 2 e numero soggetti da 2 a 30')
         cap = Decimal(30 * (min(subjects, 10) - 1) + 10 * max(subjects - 10, 0))
@@ -214,16 +338,23 @@ def calculate(request, dataset=None, dataset_hash=None):
         factor = (Decimal('1.25') if settlement and phase == 'decisionale' else Decimal(1)) * (Decimal('1.20') if investigation else Decimal(1))
         # Ordinary variation, then phase-specific rule, then plurality. Round each final phase once.
         amounts = {level: str(money(base * Decimal(mult) * factor * (1 + plurality / 100))) for level, mult in dataset['ordinary_factors'].items()}
+        if 'complexity_percent' in adj:
+            amounts['applicato'] = str(money(base * (1 + complexity / 100) * factor * (1 + plurality / 100)))
         lines.append({'phase': phase, 'label': 'conciliazione/transazione (sostituisce decisionale)' if settlement and phase == 'decisionale' else phase,
-                      'table_medium': str(base), 'special_factor': str(factor), 'plurality_percent': str(plurality), **amounts})
+                      'table_medium': str(base), 'special_factor': str(factor), 'complexity_percent': str(complexity),
+                      'plurality_percent': str(plurality), **amounts})
     totals = {}
-    for level in dataset['ordinary_factors']:
+    levels = list(dataset['ordinary_factors']) + (['applicato'] if 'complexity_percent' in adj else [])
+    for level in levels:
         fee = sum((Decimal(row[level]) for row in lines), Decimal(0))
         general = money(fee * Decimal(dataset['general_expenses_rate']) / 100)
         cpa_base = fee + general
         cpa = money(cpa_base * Decimal(dataset['cpa_rate']) / 100) if request['cpa'] else Decimal('0.00')
         vat_base = cpa_base + cpa
-        vat_due = regime == 'ordinario' and (purpose != 'soccombente' or request['vat_recoverable'])
+        if 'vat' in request:
+            vat_due = request['vat']
+        else:
+            vat_due = regime == 'ordinario' and (purpose != 'soccombente' or request['vat_recoverable'])
         vat = money(vat_base * Decimal(dataset['vat_rate']) / 100) if vat_due else Decimal('0.00')
         withholding = money(cpa_base * Decimal(dataset['withholding_rate']) / 100) if request['withholding'] else Decimal('0.00')
         gross = fee + general + cpa + vat + expenses
@@ -236,7 +367,8 @@ def calculate(request, dataset=None, dataset_hash=None):
             'request': request, 'table_number': t['number'], 'table_label': t['label'], 'band_upper': band, 'lines': lines, 'totals': totals,
             'rates': {f: dataset[f] for f in ['general_expenses_rate', 'cpa_rate', 'vat_rate', 'withholding_rate']},
             'notes': ['Minimo e massimo indicano gli estremi della variazione ordinaria del 50%, con le sole regole selezionate: non una liquidazione automatica del giudice.',
-                      'Spese generali sul compenso; CPA su compenso più spese generali; IVA sulla stessa base più CPA; base ritenuta senza CPA e IVA. Al soccombente, IVA solo se dichiarata recuperabile.',
+                      'La colonna applicato, se presente, parte dal medio e applica la percentuale di complessità scelta entro il 50%; non somma un ulteriore aumento al massimo.',
+                      'Spese generali sul compenso; CPA su compenso più spese generali; IVA sulla stessa base più CPA quando selezionata; base ritenuta senza CPA e IVA.',
                       'Anticipazioni art. 15 escluse dagli imponibili solo su conferma dell’avvocato. Altri rimborsi, bollo e acconti non inclusi.',
                       'Il calcolo è locale; la conversazione con l’agente segue il trattamento dati del fornitore utilizzato.',
                       'Preventivo delle attività indicate, da aggiornare se cambiano attività o normativa.' if purpose == 'preventivo' else 'Conteggiate esclusivamente le fasi dichiarate svolte.']}
@@ -244,7 +376,7 @@ def calculate(request, dataset=None, dataset_hash=None):
 
 def render_html(result):
     e = lambda x: html.escape(str(x), quote=True)
-    levels = ['minimo', 'medio', 'massimo']
+    levels = ['minimo', 'medio', 'massimo'] + (['applicato'] if 'applicato' in result['totals'] else [])
     def eur(x):
         return format(Decimal(x), ',.2f').replace(',', 'X').replace('.', ',').replace('X', '.') + ' €'
     rows = ''.join('<tr><td>' + e(row['label']) + '</td><td>' + eur(row['table_medium']) + '</td>' + ''.join('<td>' + eur(row[l]) + '</td>' for l in levels) + '</tr>' for row in result['lines'])
@@ -255,19 +387,20 @@ def render_html(result):
     return f'''<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Prospetto compensi</title>
 <style>body{{font:15px/1.5 system-ui,sans-serif;color:#17283b;max-width:1000px;margin:45px auto;padding:0 24px}}h1{{font-size:32px}}h2{{margin-top:32px;font-size:20px}}header{{border-bottom:3px solid #a78040;padding-bottom:20px}}small{{color:#576779}}table{{width:100%;border-collapse:collapse;margin:20px 0}}td,th{{padding:10px;border-bottom:1px solid #dbe1e7;text-align:right}}td:first-child,th:first-child{{text-align:left}}thead{{background:#17283b;color:white}}.audit{{font-size:11px;overflow-wrap:anywhere}}@page{{size:A4;margin:17mm}}@media print{{body{{margin:0;padding:0;font-size:10pt}}thead{{display:table-header-group}}tr{{break-inside:avoid}}h2{{break-after:avoid}}.audit{{font-size:8pt}}}}</style>
 <header><small>PARAMETRI FORENSI ITALIANI · PROSPETTO DI CALCOLO</small><h1>{e(result['request'].get('title', 'Compenso professionale'))}</h1><p>Tabella {e(result['table_number'])} · {e(result['table_label'])}<br>Scaglione fino a {e(result['band_upper'] or 'non applicabile')} · Riferimento normativo {e(result['request']['normative_date'])}</p></header>
-<h2>Compensi per fase</h2><table><thead><tr><th>Fase</th><th>Medio tabellare</th><th>Minimo</th><th>Medio</th><th>Massimo</th></tr></thead><tbody>{rows}</tbody></table>
-<h2>Accessori e importi finali</h2><p>Spese generali {e(result['rates']['general_expenses_rate'])}%; CPA {e(result['rates']['cpa_rate'])}% se selezionata; IVA {e(result['rates']['vat_rate'])}% in ordinario; ritenuta {e(result['rates']['withholding_rate'])}% se selezionata.</p><table><thead><tr><th>Voce</th><th>Minimo</th><th>Medio</th><th>Massimo</th></tr></thead><tbody>{summary}</tbody></table>
+<h2>Compensi per fase</h2><table><thead><tr><th>Fase</th><th>Medio tabellare</th>{''.join('<th>' + e(level.title()) + '</th>' for level in levels)}</tr></thead><tbody>{rows}</tbody></table>
+<h2>Accessori e importi finali</h2><p>Spese generali {e(result['rates']['general_expenses_rate'])}%; CPA {e(result['rates']['cpa_rate'])}% se selezionata; IVA {e(result['rates']['vat_rate'])}% se selezionata; ritenuta {e(result['rates']['withholding_rate'])}% se selezionata.</p><table><thead><tr><th>Voce</th>{''.join('<th>' + e(level.title()) + '</th>' for level in levels)}</tr></thead><tbody>{summary}</tbody></table>
 <h2>Dati e scelte dell’avvocato</h2><table>{request}</table><h2>Criteri e limiti</h2><ul>{notes}</ul><h2>Verificabilità</h2><p><a href="{e(result['source_url'])}">Gazzetta Ufficiale: D.M. 147/2022 e tabelle</a> · D.M. 55/2014 artt. 2, 4, 5, 12.</p><div class="audit">{audit}</div></html>'''
 
 
 def render_csv(result):
     output = io.StringIO(newline='')
     writer = csv.writer(output, delimiter=';')
-    writer.writerow(['Voce', 'Minimo EUR', 'Medio EUR', 'Massimo EUR'])
+    levels = ['minimo', 'medio', 'massimo'] + (['applicato'] if 'applicato' in result['totals'] else [])
+    writer.writerow(['Voce'] + [level.title() + ' EUR' for level in levels])
     for row in result['lines']:
-        writer.writerow([row['label']] + [row[l].replace('.', ',') for l in ['minimo', 'medio', 'massimo']])
+        writer.writerow([row['label']] + [row[l].replace('.', ',') for l in levels])
     for field in result['totals']['medio']:
-        writer.writerow([field] + [result['totals'][l][field].replace('.', ',') for l in ['minimo', 'medio', 'massimo']])
+        writer.writerow([field] + [result['totals'][l][field].replace('.', ',') for l in levels])
     writer.writerow(['dataset', result['dataset_version']])
     writer.writerow(['dataset_sha256', result['dataset_sha256']])
     writer.writerow(['request_sha256', result['request_sha256']])
@@ -295,6 +428,9 @@ def main(argv=None):
     calc = sub.add_parser('calculate')
     calc.add_argument('input', help='File JSON UTF-8; - per stdin')
     calc.add_argument('--output', type=Path, help='Prefisso file .json, .html e .csv; directory già esistente')
+    quick = sub.add_parser('quick', help='Calcolo essenziale: autorità, fasi, valore civile, IVA, CPA e aumenti')
+    quick.add_argument('input', help='File JSON UTF-8; - per stdin')
+    quick.add_argument('--output', type=Path, help='Prefisso file .json, .html e .csv; directory già esistente')
     args = parser.parse_args(argv)
     try:
         data, digest = load_dataset(args.dataset)
@@ -305,7 +441,7 @@ def main(argv=None):
         else:
             source = sys.stdin.buffer.read().decode('utf-8-sig') if args.input == '-' else Path(args.input).read_text(encoding='utf-8-sig')
             request = json.loads(source, object_pairs_hook=unique_object)
-            result = calculate(request, data, digest)
+            result = quick_calculate(request, data, digest) if args.command == 'quick' else calculate(request, data, digest)
             if args.output and result['status'] == 'ok':
                 outputs = {'.json': json.dumps(result, ensure_ascii=False, indent=2) + '\n', '.html': render_html(result), '.csv': render_csv(result)}
                 paths = [Path(str(args.output) + ext) for ext in outputs]
