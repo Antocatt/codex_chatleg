@@ -312,7 +312,7 @@ def main(argv=None):
                 if any(p.exists() for p in paths):
                     raise InputError('Output già esistente: scegliere un nuovo prefisso per preservare il prospetto')
                 for ext, content in outputs.items():
-                    Path(str(args.output) + ext).write_text(content, encoding='utf-8-sig' if ext == '.csv' else 'utf-8')
+                    Path(str(args.output) + ext).write_text(content, encoding='utf-8-sig' if ext == '.csv' else 'utf-8', newline='')
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 2 if result['status'] == 'needs_input' else 0
     except (InputError, OSError, ValueError, TypeError, KeyError) as exc:

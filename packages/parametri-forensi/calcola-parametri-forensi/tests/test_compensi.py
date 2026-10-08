@@ -197,6 +197,7 @@ class IntegrationTests(unittest.TestCase):
             r=self.run_cli('calculate',str(ROOT/'examples/input-civile.json'),'--output',str(prefix))
             self.assertEqual(r.returncode,0,r.stderr)
             self.assertEqual({p.suffix for p in Path(tmp).iterdir()},{'.json','.html','.csv'})
+            self.assertNotIn(b'\r\r\n', prefix.with_suffix('.csv').read_bytes())
             self.assertEqual(json.loads(prefix.with_suffix('.json').read_text(encoding='utf-8'))['totals']['medio']['totale_lordo'],'7407.95')
             again=self.run_cli('calculate',str(ROOT/'examples/input-civile.json'),'--output',str(prefix))
             self.assertEqual(again.returncode,1)

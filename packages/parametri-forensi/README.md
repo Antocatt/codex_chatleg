@@ -42,7 +42,7 @@ python3 calcola-parametri-forensi/scripts/compensi.py verify-data
 python3 calcola-parametri-forensi/scripts/compensi.py calculate calcola-parametri-forensi/examples/input-civile.json
 ```
 
-Test locali su Linux/Python 3.12 e prova con un agente tramite percorso esplicito. Compatibilità strutturale con il loader del fork verificata sul suo codice. App desktop, scoperta automatica, esecuzione Claude Code e sistemi macOS/Windows non sono ancora certificati. CI prevista per tre sistemi e Python 3.10/3.13: controllarne l’esito prima di attribuire tali compatibilità al rilascio.
+Test locali su Linux/Python 3.12 e prova con un agente tramite percorso esplicito. Compatibilità strutturale con il loader del fork verificata sul suo codice. Test automatici eseguiti anche nei runner macOS e Windows; vedere compatibilita.md per matrice e stato. App desktop, scoperta automatica ed esecuzione Claude Code non sono ancora testate. I controlli generali del fork presentano errori di release/dipendenze fuori dallo scopo del pacchetto.
 
 Il motore usa solo libreria standard. Tutte le 324 celle civili sono confrontate con un’estrazione indipendente dell’HTML ufficiale; 53 celle penali presenti (e celle vuote) sono verificate rispetto al PDF ufficiale, con controllo automatizzato delle prime sette colonne nell’HTML.
 
